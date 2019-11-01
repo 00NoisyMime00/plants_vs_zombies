@@ -7,8 +7,12 @@ import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 import javafx.animation.TranslateTransition;
 
@@ -17,6 +21,9 @@ public class backyard_controller implements Initializable{
 	
 	@FXML
 	private ImageView test;
+	
+	@FXML
+	private StackPane base;
 	
 	@Override
 	public void initialize(URL url, ResourceBundle rb) {
@@ -35,7 +42,30 @@ public class backyard_controller implements Initializable{
 //		transition.setByX(200);
 //		transition.setAutoReverse(true);
 		transition.setCycleCount(TranslateTransition.INDEFINITE);
+		
+		
+//		Image i = new Image("chomper_moving.gif", 220, 71, false, true);
+//		ImageView j = new ImageView(i);
+//		actor a = new actor(278, 300, 40, 0, j);
+//		base.getChildren().add(a.getSprite());
+//		j.setLayoutX(278);
+//		j.setLayoutY(300);
+//		base.getChildren().add(j);
+
+//		Rectangle r = new Rectangle();
+//		r.setX(50);
+//		r.setY(50);
+//		r.setWidth(200);
+//		r.setHeight(100);
+//		r.setArcWidth(20);
+//		r.setArcHeight(20);
+//		r.setFill(Color.ALICEBLUE);
+//		
+//		base.getChildren().add(r);
 		transition.play();
+		
+
+		
 	}
 	
 	
