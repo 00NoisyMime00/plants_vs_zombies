@@ -16,32 +16,5 @@
             </ImageView>
          </children>
       </Pane>
-      <Pane id="peashooter1" layoutX="10.0" layoutY="10.0">
-         <children>
-            <ImageView fitHeight="71.0" fitWidth="220.0" layoutX="236.0" layoutY="85.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@../../resources/peashooter.png" />
-               </image>
-            </ImageView>
-         </children>
-      </Pane>
-      <Pane id="sunflower1">
-         <children>
-            <ImageView fitHeight="71.0" fitWidth="220.0" layoutX="272.0" layoutY="181.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@../../resources/sunflower.png" />
-               </image>
-            </ImageView>
-         </children>
-      </Pane>
-      <Pane id="peashooter1_pea" fx:id="peashooter1_peaPane" layoutX="10.0" layoutY="100.0">
-         <children>
-            <ImageView fx:id="test" fitHeight="36.0" fitWidth="54.0" layoutX="316.0" layoutY="93.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@../../resources/pea.png" />
-               </image>
-            </ImageView>
-         </children>
-      </Pane>
    </children>
 </StackPane>
