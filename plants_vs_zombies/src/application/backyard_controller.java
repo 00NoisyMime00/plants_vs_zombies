@@ -44,10 +44,12 @@ public class backyard_controller implements Initializable{
 		transition.setCycleCount(TranslateTransition.INDEFINITE);
 		
 		
-//		Image i = new Image("chomper_moving.gif", 220, 71, false, true);
-//		ImageView j = new ImageView(i);
-//		actor a = new actor(278, 300, 40, 0, j);
-//		base.getChildren().add(a.getSprite());
+		Image i = new Image("sunflower.png", 200, 71, false, true);
+		ImageView j = new ImageView(i);
+//		j.setLayoutX(272);
+//		j.setLayoutY(181);
+		actor a = new actor(0, 0, 40, 0, j);
+		base.getChildren().add(a.getSprite());
 //		j.setLayoutX(278);
 //		j.setLayoutY(300);
 //		base.getChildren().add(j);
