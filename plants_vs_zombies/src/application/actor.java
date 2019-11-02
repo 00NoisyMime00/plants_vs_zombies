@@ -26,8 +26,8 @@ public class actor {
     	this.velocityX = velocityX;
     	this.velocityY = velocityY;
     	this.image = image;
-    	this.image.setLayoutX(this.positionX);
-    	this.image.setLayoutY(this.positionY);
+    	this.image.setTranslateX(this.positionX);
+    	this.image.setTranslateY(this.positionY);
     	
     }
     
