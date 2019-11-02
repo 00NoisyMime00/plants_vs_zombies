@@ -46,10 +46,15 @@ public class backyard_controller implements Initializable{
 		
 		Image i = new Image("sunflower.png", 200, 71, false, true);
 		ImageView j = new ImageView(i);
+		Pane p = new Pane(j);
 //		j.setLayoutX(272);
 //		j.setLayoutY(181);
-		actor a = new actor(0, 0, 40, 0, j);
+		actor a = new actor(100, 100, 40, 0, p);
 		base.getChildren().add(a.getSprite());
+//		while(true) {
+//			p.setLayoutX(100);
+//			p.setLayoutY(100);
+//		}
 //		j.setLayoutX(278);
 //		j.setLayoutY(300);
 //		base.getChildren().add(j);

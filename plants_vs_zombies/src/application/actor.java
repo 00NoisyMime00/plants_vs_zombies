@@ -4,6 +4,7 @@ import javafx.geometry.Rectangle2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Pane;
 
 public class actor {
 	private int health;
@@ -11,7 +12,7 @@ public class actor {
 	private int attack_radius;
 	private int speed;
 	
-	private ImageView image;
+	private Pane image;
     private double positionX;
     private double positionY;    
     private double velocityX;
@@ -19,7 +20,7 @@ public class actor {
     private double width;
     private double height;
  
-    public actor(double positionX, double positionY, double velocityX, double velocityY, ImageView image) {
+    public actor(double positionX, double positionY, double velocityX, double velocityY, Pane image) {
     	this.positionX = positionX;
     	this.positionY = positionY;
     	this.velocityX = velocityX;
@@ -30,7 +31,7 @@ public class actor {
     	
     }
     
-    public ImageView getSprite() {
+    public Pane getSprite() {
     	return this.image;
     }
  
