@@ -26,32 +26,28 @@ import javafx.animation.TranslateTransition;
 public class backyard_controller implements Initializable{
 	
 	
-	@FXML
-	private ImageView test;
-	
-	@FXML
-	private ImageView sunflowerDrag;
 	
 	@FXML
 	public StackPane base;
 	
 	public ArrayList<Bullet> bullets = new ArrayList<Bullet>();
+//	change this list to list of all bullet shooters
 	public ArrayList<plants> peashooterList = new ArrayList<plants>();
 	public ArrayList<plants> cardPlantList = new ArrayList<plants>();
 	
-	
+//	The drag and drop Images, have to be intialised, add chomper etc...
 	private Pane peashooter;
 	private Pane sunflower;
 	
-	public static actor peaActor;
-	public static actor ab;
 	
 	@Override
 	public void initialize(URL url, ResourceBundle rb) {
 		
-
+//		BACKYARD SETUP!
+		
 		Pane pane = null;
 		
+//		for drag and drop of sunflower, completed
 		pane = new Pane(new ImageView(new Image("sunflower_card.png", 70, 90, false, true)));
 		pane.setTranslateX(20);
 		pane.setTranslateY(20);
@@ -61,6 +57,7 @@ public class backyard_controller implements Initializable{
 		base.getChildren().add(sunflower);
 		base.getChildren().add(pane);
 		
+//		for drag and drop of peashooter, completed
 		pane = new Pane(new ImageView(new Image("peashooter_card.png", 70, 90, false, true)));
 		pane.setTranslateX(20);
 		pane.setTranslateY(115);
@@ -70,16 +67,19 @@ public class backyard_controller implements Initializable{
 		base.getChildren().add(peashooter);
 		base.getChildren().add(pane);
 		
+//		for drag and drop of chomper, INCOMPLETE
 		pane = new Pane(new ImageView(new Image("chomper_card.png", 70, 90, false, true)));
 		pane.setTranslateX(20);
 		pane.setTranslateY(210);
 		base.getChildren().add(pane);
 		
+//		for drag and drop of wallnut, INCOMPLETE
 		pane = new Pane(new ImageView(new Image("wallnut_card.png", 70, 90, false, true)));
 		pane.setTranslateX(20);
 		pane.setTranslateY(300);
 		base.getChildren().add(pane);
 		
+//		for drag and drop of snowpea, INCOMPLETE
 		pane = new Pane(new ImageView(new Image("snowpea_card.png", 70, 90, false, true)));
 		pane.setTranslateX(20);
 		pane.setTranslateY(395);
@@ -104,6 +104,8 @@ public class backyard_controller implements Initializable{
 		return this.cardPlantList;
 	}
 	
+	
+//	Method that does the drag and drop! add for chomper etc..
 	public void dragPlantsToPlace(Pane o, String plantChoice) {
 		
 		o.setOnMouseDragged(new EventHandler<MouseEvent>() {
@@ -128,7 +130,7 @@ public class backyard_controller implements Initializable{
 			public void handle(MouseEvent event) {
 				if(plantChoice.equals("sunflower")) {
 					sunflower.setVisible(false);
-					placePlants(event.getSceneX(), event.getSceneY(), "sunflower");
+					placePlants(event.getSceneX() - 10, event.getSceneY() - 5, "sunflower");
 				}
 				else if(plantChoice.equals("peashooter")) {
 					peashooter.setVisible(false);
@@ -137,6 +139,8 @@ public class backyard_controller implements Initializable{
 			}
 		});
 	}
+	
+	
 	
 	public void placePlants(double positionX, double positionY, String plantChoice) {
 		plants o = null;
@@ -151,14 +155,6 @@ public class backyard_controller implements Initializable{
 		}
 		this.base.getChildren().add(o.getSprite());
 	}
-	
-	
-	
-	public void drag(ActionEvent event) {
-		
-	}
-	
-	
 	
 	
 }
