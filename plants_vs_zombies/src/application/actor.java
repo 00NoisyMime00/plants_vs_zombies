@@ -70,6 +70,7 @@ public class actor {
 
 class plants extends actor{
 	private ArrayList<Bullet> bullets;
+	protected String type;
 	
 	public plants(double positionX, double positionY, Pane plantImage){
 		super(positionX, positionY, 0, 0, plantImage);
@@ -84,11 +85,16 @@ class plants extends actor{
 		return null;
 	}
 	
+	public String getType() {
+		return this.type;
+	}
+	
 }
 
 class PeaShooter extends plants{
 	public PeaShooter(double positionX, double positionY) {
 		super(positionX, positionY, form_image());
+		this.type = "peashooter";
 	}
 	
 	private static Pane form_image() {
@@ -110,6 +116,22 @@ class PeaShooter extends plants{
 	public Bullet attack(Pane p) {
 		return shoot(p);
 	}
+}
+
+class Sunflower extends plants{
+	public Sunflower(double positionX, double positionY) {
+		super(positionX, positionY, form_image());
+		this.type = "sunflower";
+	}
+	
+	private static Pane form_image() {
+		Image img = new Image("moving_sunflower.gif", 140, 101, false, true);
+		ImageView view = new ImageView(img);
+		Pane pane = new Pane(view);
+		
+		return pane;
+	}
+	
 }
 
 class Bullet extends actor{

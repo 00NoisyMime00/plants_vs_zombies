@@ -36,10 +36,12 @@ public class backyard_controller implements Initializable{
 	public StackPane base;
 	
 	public ArrayList<Bullet> bullets = new ArrayList<Bullet>();
-	public ArrayList<plants> plantsList = new ArrayList<plants>();
+	public ArrayList<plants> peashooterList = new ArrayList<plants>();
+	public ArrayList<plants> cardPlantList = new ArrayList<plants>();
 	
-	private final int IMG_WIDTH = 80;
-	private final int IMG_HEIGHT = 71;
+	
+	private Pane peashooter;
+	private Pane sunflower;
 	
 	public static actor peaActor;
 	public static actor ab;
@@ -91,12 +93,47 @@ public class backyard_controller implements Initializable{
 //		transition.setFromY(0);
 //		test.setLayoutX(316);
 //		test.setLayoutY(93);
+		Pane pane = null;
+		
+		pane = new Pane(new ImageView(new Image("sunflower_card.png", 70, 90, false, true)));
+		pane.setTranslateX(20);
+		pane.setTranslateY(20);
+		dragPlantsToPlace(pane, "sunflower");
+		sunflower = new Pane(new ImageView(new Image("sunflower.png", 100, 71, false, true)));
+		sunflower.setVisible(false);
+		base.getChildren().add(sunflower);
+		base.getChildren().add(pane);
+		
+		pane = new Pane(new ImageView(new Image("peashooter_card.png", 70, 90, false, true)));
+		pane.setTranslateX(20);
+		pane.setTranslateY(115);
+		dragPlantsToPlace(pane, "peashooter");
+		peashooter = new Pane(new ImageView(new Image("peashooter.png", 150, 90, false, true)));
+		peashooter.setVisible(false);
+		base.getChildren().add(peashooter);
+		base.getChildren().add(pane);
+		
+		pane = new Pane(new ImageView(new Image("chomper_card.png", 70, 90, false, true)));
+		pane.setTranslateX(20);
+		pane.setTranslateY(210);
+		base.getChildren().add(pane);
+		
+		pane = new Pane(new ImageView(new Image("wallnut_card.png", 70, 90, false, true)));
+		pane.setTranslateX(20);
+		pane.setTranslateY(300);
+		base.getChildren().add(pane);
+		
+		pane = new Pane(new ImageView(new Image("snowpea_card.png", 70, 90, false, true)));
+		pane.setTranslateX(20);
+		pane.setTranslateY(395);
+		base.getChildren().add(pane);
 		
 		PeaShooter o = new PeaShooter(260, 260);
-		draga(o);
-		
-		plantsList.add(o);
+		peashooterList.add(o);
 		base.getChildren().add(o.getSprite());
+		
+		Sunflower aSunflower = new Sunflower(390, 390);
+		base.getChildren().add(aSunflower.getSprite());
 		
 //		PeaBullet peaBullet = new PeaBullet(new Double(280), new Double(260), new Double(1));
 //		base.getChildren().add(peaBullet.getSprite());
@@ -185,19 +222,63 @@ public class backyard_controller implements Initializable{
 		return this.bullets;
 	}
 	
-	public ArrayList<plants> getPlantsList(){
-		return this.plantsList;
+	public ArrayList<plants> getpeashooterList(){
+		return this.peashooterList;
 	}
 	
-	public void draga(plants o) {
-		o.getSprite().setOnMouseDragged(new EventHandler<MouseEvent>() {
+	public ArrayList<plants> getCardPlantList(){
+		return this.cardPlantList;
+	}
+	
+	public void dragPlantsToPlace(Pane o, String plantChoice) {
+		
+		o.setOnMouseDragged(new EventHandler<MouseEvent>() {
 			public void handle(MouseEvent event) {
-//				o.getSprite().setTranslateX(event.getX());
-				o.setPosition(event.getSceneX(), event.getSceneY());
-				System.out.println(o.getSprite().getTranslateX()+" "+o.getSprite().getTranslateY()+" "+event.getX()+" "+event.getY());
+				
+				
+				if(plantChoice.equals("sunflower")) {
+					sunflower.setVisible(true);
+					sunflower.setTranslateX(event.getSceneX());
+					sunflower.setTranslateY(event.getSceneY());
+					System.out.println("here");
+				}
+				else if(plantChoice.equals("peashooter")) {
+					peashooter.setVisible(true);
+					peashooter.setTranslateX(event.getSceneX());
+					peashooter.setTranslateY(event.getSceneY());
+				}
+			}
+		});
+		
+		o.setOnMouseReleased(new EventHandler<MouseEvent>() {
+			public void handle(MouseEvent event) {
+				if(plantChoice.equals("sunflower")) {
+					sunflower.setVisible(false);
+					placePlants(event.getSceneX(), event.getSceneY(), "sunflower");
+				}
+				else if(plantChoice.equals("peashooter")) {
+					peashooter.setVisible(false);
+					placePlants(event.getSceneX() + 10, event.getSceneY() + 10, "peashooter");
+				}
 			}
 		});
 	}
+	
+	public void placePlants(double positionX, double positionY, String plantChoice) {
+		plants o = null;
+		if(plantChoice.equals("peashooter")) {
+			o = new PeaShooter(positionX, positionY);
+//			CHANGE THIS!! ONLY ADDING PEASHOOTERS NOW!! THIS LIST IS FOR ALL BULLET PLANTS
+			this.peashooterList.add(o);
+			
+		}
+		else if(plantChoice.equals("sunflower")) {
+			o = new Sunflower(positionX, positionY);
+		}
+		this.base.getChildren().add(o.getSprite());
+	}
+	
+	
 	
 	public void drag(ActionEvent event) {
 		

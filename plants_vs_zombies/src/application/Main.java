@@ -1,5 +1,7 @@
 package application;
 	
+import java.util.ArrayList;
+
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -38,10 +40,15 @@ public class Main extends Application {
 //					System.out.println((currentTime - prevTime)/1000000000.0);
 					if((currentTime - prevTime[0])/1000000000.0 >= 2) {
 //						System.out.println("here?");
-						for(plants p: base.getPlantsList()) {
+						for(plants p: base.getpeashooterList()) {
 							base.getBulletsList().add(p.attack(base.getBase()));
 							prevTime[0] = currentTime;
 						}
+					}
+					
+					ArrayList<plants> allPlants = base.getCardPlantList();
+					for(plants p: allPlants) {
+						base.dragPlantsToPlace(p.getSprite(), p.getType());
 					}
 					
 				}
