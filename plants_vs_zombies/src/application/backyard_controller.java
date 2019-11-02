@@ -116,7 +116,6 @@ public class backyard_controller implements Initializable{
 					sunflower.setVisible(true);
 					sunflower.setTranslateX(event.getSceneX());
 					sunflower.setTranslateY(event.getSceneY());
-					System.out.println("here");
 				}
 				else if(plantChoice.equals("peashooter")) {
 					peashooter.setVisible(true);

@@ -52,11 +52,20 @@ public class actor {
     }
  
     public void update(double time){
-//    	System.out.println(this.image.getLayoutX()+" "+this.image.getLayoutY()+" "+this.image.getTranslateX());
+    	
         positionX += velocityX * time;
         positionY += velocityY * time;
         this.image.setTranslateX(positionX);
         this.image.setTranslateY(this.positionY);
+        
+        if(this instanceof Bullet) {
+        	Bullet bullet = (Bullet)this;
+        	if(bullet.getSprite().getTranslateX() >= 1050) {
+        		bullet.setVelocity(0, 0);
+        		bullet.setPosition(0, 0);
+        		bullet.getSprite().setVisible(false);
+        	}
+        }
     }
  
     public Rectangle2D getBoundary(){
