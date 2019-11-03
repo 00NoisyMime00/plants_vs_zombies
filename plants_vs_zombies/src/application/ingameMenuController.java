@@ -67,6 +67,7 @@ public class ingameMenuController implements Initializable{
 					System.out.println("clicking resume");
 					Stage stage = Main.getStage();
 					stage.setScene(Main.getBackyarScene());
+					Main.playGameSound();
 				}
 				
 			}

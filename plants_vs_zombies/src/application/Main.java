@@ -1,5 +1,6 @@
 package application;
 	
+import java.io.File;
 import java.util.ArrayList;
 
 import javafx.animation.AnimationTimer;
@@ -11,6 +12,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
@@ -21,6 +24,8 @@ public class Main extends Application {
 	private static Scene sceneBackyard;
 	private static Scene sceneInGameMenu;
 	private static Scene sceneMainPage;
+	
+	private static MediaPlayer mediaPlayer;
 	
 	@Override
 	public void start(Stage primaryStage) {
@@ -63,7 +68,8 @@ public class Main extends Application {
 			primaryStage.setScene(sceneMainPage);
 			
 			
-			
+//			remove this
+			lawnMower a = new lawnMower(new Double(160), new Double(70));
 			
 			Long prevTime[] = new Long[] {new Long(System.nanoTime()).longValue()};
 			
@@ -102,18 +108,13 @@ public class Main extends Application {
 						b.update((currentTIme - b.getStartTime())/10000000000.0);
 					}
 					
+					a.update((currentTIme - a.getStartTime())/10000000000.0);
+					
 				}
 			}.start();
 			
-//			Animation timer for ingame menus, TODO: convert to separate class
-//			new AnimationTimer() {
-//				
-//				@Override
-//				public void handle(long arg0) {
-//					// TODO Auto-generated method stub
-//					
-//				}
-//			};
+			playMainPageSound();
+	
 			
 			primaryStage.setResizable(false);
 			primaryStage.show();
@@ -126,6 +127,26 @@ public class Main extends Application {
 	
 	public static Stage getStage() {
 		return stage;
+	}
+	
+	public static void playMainPageSound() {
+		String musicFile = "soundtracks/mainMenuSoundtrack.mp3";     // For example
+		
+		if(mediaPlayer != null)
+			mediaPlayer.stop();
+		
+		Media sound = new Media(new File(musicFile).toURI().toString());
+		mediaPlayer = new MediaPlayer(sound);
+		mediaPlayer.play();
+	}
+	
+	public static void playGameSound() {
+		String musicFile = "soundtracks/gamePlaySoundTrack.mp3";     // For example
+		
+		mediaPlayer.stop();
+		Media sound = new Media(new File(musicFile).toURI().toString());
+		mediaPlayer = new MediaPlayer(sound);
+		mediaPlayer.play();
 	}
 	
 	public static Scene getBackyarScene() {

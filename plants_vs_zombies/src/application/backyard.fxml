@@ -25,5 +25,14 @@
             </ImageView>
          </children>
       </Pane>
+      <Pane>
+         <children>
+            <ImageView fitHeight="43.0" fitWidth="355.0" layoutX="428.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../../resources/timer.png" />
+               </image>
+            </ImageView>
+         </children>
+      </Pane>
    </children>
 </StackPane>

@@ -14,6 +14,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
@@ -39,6 +40,8 @@ public class backyard_controller implements Initializable{
 //	The drag and drop Images, have to be intialised, add chomper etc...
 	private Pane peashooter;
 	private Pane sunflower;
+	
+//	private Pane menuButton;
 	
 	private boolean gamePaused = false;
 	
@@ -93,11 +96,23 @@ public class backyard_controller implements Initializable{
 //		Ingame menu button
 		ingameMenu m = new ingameMenu();
 		pause(m.getSprite());
+//		Button menuButton = new Button("menu");
+//		menuButton.setMinSize(53, 59);
+//		menuButton.setTranslateX(480);
+//		menuButton.setTranslateY(-260);
+//		menuButton.toFront();
+		pause(m.getSprite());
 		base.getChildren().add(m.getSprite());
 		
 		
 //		Lawn Mowers
 		lawnMower.createlawnMowers(this.getBase());
+		
+		
+//		Shovel
+//		showel sh = new showel();
+//		base.getChildren().add(sh.getSprite());
+		
 		
 		
 	}
@@ -179,16 +194,21 @@ public class backyard_controller implements Initializable{
 	
 	public void pause(Pane p) {
 		p.setOnMouseClicked(new EventHandler<MouseEvent>() {
-
 			@Override
 			public void handle(MouseEvent arg0) {
 				System.out.println("clicking menu");
 				Stage s = Main.getStage();
 				s.setScene(Main.getInGameScene());
 				
+				Main.playMainPageSound();
+				
 			}
 		});
 	}
+	
+//	public Pane getMenuButton() {
+//		return menuButton;
+//	}
 	
 	
 }

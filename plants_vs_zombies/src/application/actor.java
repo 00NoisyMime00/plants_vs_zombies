@@ -81,15 +81,21 @@ public class actor {
 // Lawn Mower
 class lawnMower extends actor{
 	private static Pane base;
+	private long startTime;
 	
 	public lawnMower(Double positionX, Double positionY) {
 		super(positionX, positionY, 1, 0, form_image());
 		lawnMower.base.getChildren().add(this.getSprite());
+		this.startTime = System.nanoTime();
+	}
+	
+	public long getStartTime() {
+		return this.startTime;
 	}
 	
 	public static void createlawnMowers(Pane base) {
 		lawnMower.base = base;
-		for(int i = 0; i < 5; i++) {
+		for(int i = 1; i < 5; i++) {
 			lawnMower a = new lawnMower(new Double(160), new Double(70) + i*100);
 		}
 	}

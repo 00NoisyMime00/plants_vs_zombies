@@ -60,6 +60,7 @@ public class mainPageController implements Initializable{
 					System.out.println("startgame clicked..");
 					Stage stage = Main.getStage();
 					stage.setScene(Main.getBackyarScene());
+					Main.playGameSound();
 				}
 				else if(b.getText().equals("loadGame")) {
 					System.out.println("clicked load game..");
