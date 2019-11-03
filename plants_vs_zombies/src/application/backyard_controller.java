@@ -96,6 +96,10 @@ public class backyard_controller implements Initializable{
 		base.getChildren().add(m.getSprite());
 		
 		
+//		Lawn Mowers
+		lawnMower.createlawnMowers(this.getBase());
+		
+		
 	}
 	
 	public Pane getBase() {

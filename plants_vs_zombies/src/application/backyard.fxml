@@ -16,5 +16,14 @@
             </ImageView>
          </children>
       </Pane>
+      <Pane>
+         <children>
+            <ImageView fitHeight="43.0" fitWidth="180.0" layoutX="106.0" layoutY="6.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../../resources/sunTokenCounter.png" />
+               </image>
+            </ImageView>
+         </children>
+      </Pane>
    </children>
 </StackPane>
