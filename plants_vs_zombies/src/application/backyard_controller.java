@@ -20,6 +20,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 import javafx.animation.TranslateTransition;
 
@@ -38,6 +39,8 @@ public class backyard_controller implements Initializable{
 //	The drag and drop Images, have to be intialised, add chomper etc...
 	private Pane peashooter;
 	private Pane sunflower;
+	
+	private boolean gamePaused = false;
 	
 	
 	@Override
@@ -86,10 +89,25 @@ public class backyard_controller implements Initializable{
 		base.getChildren().add(pane);
 		
 		
+		
+//		Ingame menu button
+		ingameMenu m = new ingameMenu();
+		pause(m.getSprite());
+		base.getChildren().add(m.getSprite());
+		
+		
 	}
 	
 	public Pane getBase() {
 		return this.base;
+	}
+	
+	public boolean getIsGamePaused() {
+		return this.gamePaused;
+	}
+	
+	public void setIsGamePaused(boolean b) {
+		this.gamePaused = b;
 	}
 	
 	public ArrayList<Bullet> getBulletsList(){
@@ -129,7 +147,7 @@ public class backyard_controller implements Initializable{
 			public void handle(MouseEvent event) {
 				if(plantChoice.equals("sunflower")) {
 					sunflower.setVisible(false);
-					placePlants(event.getSceneX() - 10, event.getSceneY() - 5, "sunflower");
+					placePlants(event.getSceneX()+20, event.getSceneY() - 5, "sunflower");
 				}
 				else if(plantChoice.equals("peashooter")) {
 					peashooter.setVisible(false);
@@ -153,6 +171,19 @@ public class backyard_controller implements Initializable{
 			o = new Sunflower(positionX, positionY);
 		}
 		this.base.getChildren().add(o.getSprite());
+	}
+	
+	public void pause(Pane p) {
+		p.setOnMouseClicked(new EventHandler<MouseEvent>() {
+
+			@Override
+			public void handle(MouseEvent arg0) {
+				System.out.println("clicking menu");
+				Stage s = Main.getStage();
+				s.setScene(Main.getInGameScene());
+				
+			}
+		});
 	}
 	
 	

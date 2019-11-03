@@ -16,40 +16,78 @@ import javafx.scene.shape.Rectangle;
 
 
 public class Main extends Application {
+	
+	private static Stage stage;
+	private static Scene sceneBackyard;
+	private static Scene sceneInGameMenu;
+	private static Scene sceneMainPage;
+	
 	@Override
 	public void start(Stage primaryStage) {
 		try {
-			FXMLLoader loader = new FXMLLoader(getClass().getResource("/application/backyard.fxml"));
-			Parent root = loader.load();
+			stage = primaryStage;
+			
+			FXMLLoader loader;
+			Parent root;
+			
+//			backyard
+			loader = new FXMLLoader(getClass().getResource("/application/backyard.fxml"));
+			root = loader.load();
 			backyard_controller base = loader.getController();
 			
-			Scene scene = new Scene(root);
-			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+			Scene sceneBackyard = new Scene(root);
+			
+			sceneBackyard.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+			Main.sceneBackyard = sceneBackyard;
+			primaryStage.setScene(sceneBackyard);
+			
+			
+			
+//			In-Game Menu
+			loader = new FXMLLoader(getClass().getResource("/application/inGameMenu.fxml"));
+			root = loader.load();
+			ingameMenuController ingameMenu = loader.getController();
+			
+			Scene sceneInGameMenu = new Scene(root);
+			Main.sceneInGameMenu = sceneInGameMenu;
+//			primaryStage.setScene(sceneInGameMenu);
+			
+			
+//			Main page
+			loader = new FXMLLoader(getClass().getResource("/application/mainPage.fxml"));
+			root = loader.load();
+			mainPageController mainPage = loader.getController();
+			
+			Scene sceneMainPage = new Scene(root);
+			Main.sceneMainPage = sceneMainPage;
+			primaryStage.setScene(sceneMainPage);
+			
+			
 			
 			
 			Long prevTime[] = new Long[] {new Long(System.nanoTime()).longValue()};
 			
+//			TODO: convert to a separate handler class
 			new AnimationTimer() {
 				
 				@Override
 				public void handle(long currentTime) {
-//					backyard_controller.peaActor.update((currentTime - prevTime)/10000000000.0);
-//					backyard_controller.bullets.update((currentTime - prevTime)/10000000000.0);
-//					for(Bullet b: backyard_controller.bullets) {
-//						b.update((currentTime - prevTime[0])/10000000000.0);
-//					}
-//					System.out.println((currentTime - prevTime)/1000000000.0);
-					if((currentTime - prevTime[0])/1000000000.0 >= 2) {
-//						System.out.println("here?");
-						for(plants p: base.getpeashooterList()) {
-							base.getBulletsList().add(p.attack(base.getBase()));
-							prevTime[0] = currentTime;
+					
+					if(!base.getIsGamePaused()) {
+						if((currentTime - prevTime[0])/1000000000.0 >= 2) {
+							for(plants p: base.getpeashooterList()) {
+								base.getBulletsList().add(p.attack(base.getBase()));
+								prevTime[0] = currentTime;
+							}
+						}
+						
+						ArrayList<plants> allPlants = base.getCardPlantList();
+						for(plants p: allPlants) {
+							base.dragPlantsToPlace(p.getSprite(), p.getType());
 						}
 					}
-					
-					ArrayList<plants> allPlants = base.getCardPlantList();
-					for(plants p: allPlants) {
-						base.dragPlantsToPlace(p.getSprite(), p.getType());
+					else {
+//						TODO
 					}
 					
 				}
@@ -60,16 +98,23 @@ public class Main extends Application {
 				
 				@Override
 				public void handle(long currentTIme) {
-//					System.out.println("here");
 					for(Bullet b: base.getBulletsList()) {
 						b.update((currentTIme - b.getStartTime())/10000000000.0);
-//						prevTimeLong[0] = currentTIme;
 					}
 					
 				}
 			}.start();
 			
-			primaryStage.setScene(scene);
+//			Animation timer for ingame menus, TODO: convert to separate class
+//			new AnimationTimer() {
+//				
+//				@Override
+//				public void handle(long arg0) {
+//					// TODO Auto-generated method stub
+//					
+//				}
+//			};
+			
 			primaryStage.setResizable(false);
 			primaryStage.show();
 		} 
@@ -77,6 +122,22 @@ public class Main extends Application {
 		catch(Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public static Stage getStage() {
+		return stage;
+	}
+	
+	public static Scene getBackyarScene() {
+		return sceneBackyard;
+	}
+	
+	public static Scene getInGameScene() {
+		return sceneInGameMenu;
+	}
+	
+	public static Scene getMainPage() {
+		return sceneMainPage;
 	}
 	
 	public static void main(String[] args) {
