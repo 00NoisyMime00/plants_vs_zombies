@@ -1,12 +1,14 @@
 package application;
 
 import java.net.URL;
-import application.PeaShooter;
+import application.actor.*;
 
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.ResourceBundle;
 
+//import actor.Bullet;
+//import actor.lawnMower;
 //import com.sun.glass.events.MouseEvent;
 import javafx.scene.input.*;
 
@@ -41,7 +43,11 @@ public class backyard_controller implements Initializable{
 	private Pane peashooter;
 	private Pane sunflower;
 	
-//	private Pane menuButton;
+	
+//	Shovel for each backyard
+	private static shovel sh;
+	
+	private static ingameMenu m;
 	
 	private boolean gamePaused = false;
 	
@@ -94,13 +100,8 @@ public class backyard_controller implements Initializable{
 		
 		
 //		Ingame menu button
-		ingameMenu m = new ingameMenu();
+		m = new ingameMenu();
 		pause(m.getSprite());
-//		Button menuButton = new Button("menu");
-//		menuButton.setMinSize(53, 59);
-//		menuButton.setTranslateX(480);
-//		menuButton.setTranslateY(-260);
-//		menuButton.toFront();
 		pause(m.getSprite());
 		base.getChildren().add(m.getSprite());
 		
@@ -110,10 +111,8 @@ public class backyard_controller implements Initializable{
 		
 		
 //		Shovel
-//		showel sh = new showel();
-//		base.getChildren().add(sh.getSprite());
-		
-		
+		sh = new shovel();
+		base.getChildren().add(sh.getSprite());
 		
 	}
 	
@@ -156,7 +155,7 @@ public class backyard_controller implements Initializable{
 				}
 				else if(plantChoice.equals("peashooter")) {
 					peashooter.setVisible(true);
-					peashooter.setTranslateX(event.getSceneX());
+					peashooter.setTranslateX(event.getSceneX() - 25);
 					peashooter.setTranslateY(event.getSceneY());
 				}
 			}
@@ -164,13 +163,22 @@ public class backyard_controller implements Initializable{
 		
 		o.setOnMouseReleased(new EventHandler<MouseEvent>() {
 			public void handle(MouseEvent event) {
+				int xIndex = (int)(event.getSceneX() - 255 + 20)/100;
+				int yIndex = (int)(event.getSceneY() - 80)/100;
+				
+//				just to adjust
+				if(event.getSceneX() > 420)
+					xIndex+=1;
+				if(event.getSceneX() > 815)
+					xIndex++;
+				
 				if(plantChoice.equals("sunflower")) {
 					sunflower.setVisible(false);
-					placePlants(event.getSceneX()+20, event.getSceneY() - 5, "sunflower");
+					placePlants(255+xIndex*80 - 20, 80 + yIndex*100, "sunflower");
 				}
 				else if(plantChoice.equals("peashooter")) {
 					peashooter.setVisible(false);
-					placePlants(event.getSceneX() + 10, event.getSceneY() + 10, "peashooter");
+					placePlants(255+xIndex*80 - 20, 80 + yIndex*100, "peashooter");
 				}
 			}
 		});
@@ -190,6 +198,7 @@ public class backyard_controller implements Initializable{
 			o = new Sunflower(positionX, positionY);
 		}
 		this.base.getChildren().add(o.getSprite());
+		bringComponentsOnTop();
 	}
 	
 	public void pause(Pane p) {
@@ -206,9 +215,13 @@ public class backyard_controller implements Initializable{
 		});
 	}
 	
-//	public Pane getMenuButton() {
-//		return menuButton;
-//	}
+	public static void bringComponentsOnTop() {
+
+		m.getSprite().toFront();
+		sh.getSprite().toFront();
+//		System.out.println("calling");
+	}
+
 	
 	
 }

@@ -68,9 +68,6 @@ public class Main extends Application {
 			primaryStage.setScene(sceneMainPage);
 			
 			
-//			remove this
-			lawnMower a = new lawnMower(new Double(160), new Double(70));
-			
 			Long prevTime[] = new Long[] {new Long(System.nanoTime()).longValue()};
 			
 //			TODO: convert to a separate handler class
@@ -108,7 +105,6 @@ public class Main extends Application {
 						b.update((currentTIme - b.getStartTime())/10000000000.0);
 					}
 					
-					a.update((currentTIme - a.getStartTime())/10000000000.0);
 					
 				}
 			}.start();
@@ -137,6 +133,7 @@ public class Main extends Application {
 		
 		Media sound = new Media(new File(musicFile).toURI().toString());
 		mediaPlayer = new MediaPlayer(sound);
+		mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
 		mediaPlayer.play();
 	}
 	
@@ -146,6 +143,7 @@ public class Main extends Application {
 		mediaPlayer.stop();
 		Media sound = new Media(new File(musicFile).toURI().toString());
 		mediaPlayer = new MediaPlayer(sound);
+		mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
 		mediaPlayer.play();
 	}
 	
