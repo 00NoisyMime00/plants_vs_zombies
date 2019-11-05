@@ -47,6 +47,9 @@ public class backyard_controller implements Initializable{
 //	Shovel for each backyard
 	private static shovel sh;
 	
+//	2D matrix for each backyard
+	private int[][] backyardMatrix = new int[5][9];
+	
 	private static ingameMenu m;
 	
 	private boolean gamePaused = false;
@@ -172,14 +175,13 @@ public class backyard_controller implements Initializable{
 				if(event.getSceneX() > 815)
 					xIndex++;
 				if(xIndex >= 0 && xIndex <= 8 && yIndex >=0 && yIndex <= 4) {
-						
-					System.out.println(yIndex);
+					
 					if(plantChoice.equals("sunflower")) {
-						placePlants(255+xIndex*80 - 20, 80 + yIndex*100, "sunflower");
+						placePlants(255+xIndex*80 - 20, 80 + yIndex*100, "sunflower", xIndex, yIndex);
 					}
 					else if(plantChoice.equals("peashooter")) {
 						
-						placePlants(255+xIndex*80 - 20, 80 + yIndex*100, "peashooter");
+						placePlants(255+xIndex*80 - 20, 80 + yIndex*100, "peashooter", xIndex, yIndex);
 					}
 				}
 				sunflower.setVisible(false);
@@ -189,20 +191,21 @@ public class backyard_controller implements Initializable{
 	}
 	
 	
-//	TODO: check 2 plants on same location(2D array)
-//	TODO: Plants being placed outside the lawn
-	public void placePlants(double positionX, double positionY, String plantChoice) {
+	public void placePlants(double positionX, double positionY, String plantChoice, int matrixX, int matrixY) {
 		plants o = null;
-		if(plantChoice.equals("peashooter")) {
-			o = new PeaShooter(positionX, positionY);
-//			CHANGE THIS!! ONLY ADDING PEASHOOTERS NOW!! THIS LIST IS FOR ALL BULLET PLANTS
-			this.peashooterList.add(o);
-			
+		if(this.backyardMatrix[matrixX][matrixY] != 1) {
+			this.backyardMatrix[matrixX][matrixY] = 1;
+			if(plantChoice.equals("peashooter")) {
+				o = new PeaShooter(positionX, positionY);
+	//			CHANGE THIS!! ONLY ADDING PEASHOOTERS NOW!! THIS LIST IS FOR ALL BULLET PLANTS
+				this.peashooterList.add(o);
+				
+			}
+			else if(plantChoice.equals("sunflower")) {
+				o = new Sunflower(positionX, positionY);
+			}
+			this.base.getChildren().add(o.getSprite());
 		}
-		else if(plantChoice.equals("sunflower")) {
-			o = new Sunflower(positionX, positionY);
-		}
-		this.base.getChildren().add(o.getSprite());
 		bringComponentsOnTop();
 	}
 	
