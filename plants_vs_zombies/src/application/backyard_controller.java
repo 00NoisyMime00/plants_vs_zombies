@@ -48,7 +48,7 @@ public class backyard_controller implements Initializable{
 	private static shovel sh;
 	
 //	2D matrix for each backyard
-	private int[][] backyardMatrix = new int[5][9];
+	private int[][] backyardMatrix = new int[9][9];
 	
 	private static ingameMenu m;
 	
@@ -174,6 +174,8 @@ public class backyard_controller implements Initializable{
 					xIndex+=1;
 				if(event.getSceneX() > 815)
 					xIndex++;
+				
+//				checking if inside backyard or not
 				if(xIndex >= 0 && xIndex <= 8 && yIndex >=0 && yIndex <= 4) {
 					
 					if(plantChoice.equals("sunflower")) {
@@ -193,6 +195,7 @@ public class backyard_controller implements Initializable{
 	
 	public void placePlants(double positionX, double positionY, String plantChoice, int matrixX, int matrixY) {
 		plants o = null;
+//		System.out.println("x "+matrixX+" y "+matrixY);
 		if(this.backyardMatrix[matrixX][matrixY] != 1) {
 			this.backyardMatrix[matrixX][matrixY] = 1;
 			if(plantChoice.equals("peashooter")) {
