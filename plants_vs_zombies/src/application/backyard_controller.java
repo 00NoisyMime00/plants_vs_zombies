@@ -171,21 +171,26 @@ public class backyard_controller implements Initializable{
 					xIndex+=1;
 				if(event.getSceneX() > 815)
 					xIndex++;
-				
-				if(plantChoice.equals("sunflower")) {
-					sunflower.setVisible(false);
-					placePlants(255+xIndex*80 - 20, 80 + yIndex*100, "sunflower");
+				if(xIndex >= 0 && xIndex <= 8 && yIndex >=0 && yIndex <= 4) {
+						
+					System.out.println(yIndex);
+					if(plantChoice.equals("sunflower")) {
+						placePlants(255+xIndex*80 - 20, 80 + yIndex*100, "sunflower");
+					}
+					else if(plantChoice.equals("peashooter")) {
+						
+						placePlants(255+xIndex*80 - 20, 80 + yIndex*100, "peashooter");
+					}
 				}
-				else if(plantChoice.equals("peashooter")) {
-					peashooter.setVisible(false);
-					placePlants(255+xIndex*80 - 20, 80 + yIndex*100, "peashooter");
-				}
+				sunflower.setVisible(false);
+				peashooter.setVisible(false);
 			}
 		});
 	}
 	
 	
-	
+//	TODO: check 2 plants on same location(2D array)
+//	TODO: Plants being placed outside the lawn
 	public void placePlants(double positionX, double positionY, String plantChoice) {
 		plants o = null;
 		if(plantChoice.equals("peashooter")) {

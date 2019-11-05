@@ -81,6 +81,7 @@ public class Main extends Application {
 							for(plants p: base.getpeashooterList()) {
 								base.getBulletsList().add(p.attack(base.getBase()));
 								prevTime[0] = currentTime;
+								backyard_controller.bringComponentsOnTop();
 							}
 						}
 						
