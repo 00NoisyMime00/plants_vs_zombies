@@ -7,9 +7,6 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.ResourceBundle;
 
-//import actor.Bullet;
-//import actor.lawnMower;
-//import com.sun.glass.events.MouseEvent;
 import javafx.scene.input.*;
 
 import javafx.event.ActionEvent;
@@ -25,6 +22,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import javafx.animation.AnimationTimer;
 import javafx.animation.TranslateTransition;
 
 public class backyard_controller implements Initializable{
@@ -38,6 +36,7 @@ public class backyard_controller implements Initializable{
 //	change this list to list of all bullet shooters
 	public ArrayList<plants> peashooterList = new ArrayList<plants>();
 	public ArrayList<plants> cardPlantList = new ArrayList<plants>();
+	private ArrayList<Pane> sunTokenList = new ArrayList<Pane>();
 	
 //	The drag and drop Images, have to be intialised, add chomper etc...
 	private Pane peashooter;
@@ -117,6 +116,58 @@ public class backyard_controller implements Initializable{
 		sh = new shovel();
 		base.getChildren().add(sh.getSprite());
 		
+		
+//		Sun Token
+//		TODO: remove suns after some time
+		generateSunTokens(this);
+		
+//		base.setOnMouseMoved(new EventHandler<MouseEvent>() {
+//
+//			@Override
+//			public void handle(MouseEvent arg0) {
+//				System.out.println("x "+arg0.getSceneX()+" y "+arg0.getSceneY());
+//				
+//			}
+//		});
+		
+	}
+	
+	public void generateSunTokens(backyard_controller base) {
+		long[] startTime = new long[] {System.nanoTime()};
+		Pane pane[] = new Pane[] {null};
+		double[] y = new double[] {-1};
+		
+		new AnimationTimer() {
+			
+			@Override
+			public void handle(long currentTime) {
+				
+				if((currentTime - startTime[0])/1000000000 >= 10) {
+					pane[0] = sunToken.generateSun();
+					y[0] = pane[0].getTranslateY();
+					pane[0].setTranslateY(0);
+					base.getBase().getChildren().add(pane[0]);
+					base.addToSunTokenList(pane[0]);
+					startTime[0] = currentTime;
+					backyard_controller.bringComponentsOnTop();
+				}
+				if(pane[0] != null) {
+					if(y[0] >= pane[0].getTranslateY()) {
+						pane[0].setTranslateY(2*((currentTime - startTime[0])/10000000));
+					}
+					else {
+						
+						pane[0] = null;
+						y[0] = -1;
+					}
+				}
+			}
+		}.start();
+		
+	}
+	
+	public void addToSunTokenList(Pane p) {
+		this.sunTokenList.add(p);
 	}
 	
 	public Pane getBase() {
@@ -231,6 +282,10 @@ public class backyard_controller implements Initializable{
 		m.getSprite().toFront();
 		sh.getSprite().toFront();
 //		System.out.println("calling");
+	}
+	
+	public ArrayList<Pane> getSunTokenList() {
+		return this.sunTokenList;
 	}
 
 	

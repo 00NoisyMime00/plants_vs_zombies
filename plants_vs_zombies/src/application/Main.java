@@ -89,6 +89,7 @@ public class Main extends Application {
 						for(plants p: allPlants) {
 							base.dragPlantsToPlace(p.getSprite(), p.getType());
 						}
+						
 					}
 					else {
 //						TODO
