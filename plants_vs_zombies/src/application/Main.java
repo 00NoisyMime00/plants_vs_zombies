@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import javafx.application.Platform;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
@@ -81,6 +82,13 @@ public class Main extends Application {
 			
 //			Handles bullets movement
 			bulletsMovementHandler.getInstance(base).start();
+			
+			
+//			Handles removing sunTokens after some time
+			removeSunTokensAfterSometime.getInstance().start();
+			
+//			Handles replanting time
+			replantTimeHandler.getInstance().start();
 			
 			playMainPageSound();
 	
@@ -199,7 +207,6 @@ class plantsActionHandler extends AnimationTimer{
 		}
 		else {
 //			TODO
-			System.out.println("Game Paused");
 		}
 		
 	}
@@ -226,17 +233,84 @@ class bulletsMovementHandler extends AnimationTimer{
 	
 	@Override
 	public void handle(long currentTIme) {
-		if(!base.getIsGamePaused()) {
-			for(Bullet b: base.getBulletsList()) {
-				b.update((currentTIme - b.getStartTime())/10000000000.0);
-			}
-		}
-		else {
-			for(Bullet b: base.getBulletsList()) {
-				b.setStartTime(currentTIme);
-			}
+		for(Bullet b: base.getBulletsList()) {
+			b.update((currentTIme - b.getStartTime())/10000000000.0);
 		}
 		
+	}
+	
+}
+
+//If game is not paused, removes the first suntoken if it has been there for more than 5 seconds
+class removeSunTokensAfterSometime extends AnimationTimer{
+	private static removeSunTokensAfterSometime instance;
+	
+	private removeSunTokensAfterSometime() {
+	}
+	
+	public static removeSunTokensAfterSometime getInstance() {
+		if(instance == null) {
+			instance = new removeSunTokensAfterSometime();
+		}
+		return instance;
+	}
+	
+	@Override
+	public void handle(long currentTime) {
+		if(!Main.getCurrentBase().getIsGamePaused()) {
+			ArrayList<sunToken> allSunTokens = Main.getCurrentBase().getSunTokenList();
+			if(allSunTokens.size() > 0) {
+				if((currentTime - allSunTokens.get(0).getStartTime())/1000000000 >= 15) {
+					allSunTokens.get(0).getSprite().setVisible(false);
+					allSunTokens.remove(0);
+				}
+			}
+		}
+	}
+	
+}
+
+class replantTimeHandler extends AnimationTimer{
+	private static replantTimeHandler instance;
+	
+	public static replantTimeHandler getInstance() {
+		if(instance == null) {
+			instance = new replantTimeHandler();
+		}
+		return instance;
+	}
+	
+	private replantTimeHandler() {
+		
+	}
+
+	@Override
+	public void handle(long currentTime) {
+		if(!Main.getCurrentBase().getIsGamePaused()) {
+//			sunflower
+			if(Sunflower.getTimeLeftToPlant() > 0) {
+				backyard_controller.getCard("sunflower").setOpacity(0.5);
+				Sunflower.setTimeLeftToPlant(Sunflower.getReplantTime() - ((currentTime - Sunflower.getPlaceTime())/1000000000) );
+			}
+			else {
+				if(Main.getCurrentBase().checkEnoughMoney(Sunflower.getPrice())) {
+					backyard_controller.getCard("sunflower").setOpacity(1);
+				}
+				else {
+					backyard_controller.getCard("sunflower").setOpacity(0.5);
+				}
+			}
+			
+//			peashooter
+			
+			
+//			chomper
+			
+//			snowpeashooter
+			
+//			walnut
+
+		}
 	}
 	
 }

@@ -9,7 +9,6 @@ import javafx.scene.layout.Pane;
 public class plants extends actor{
 	private ArrayList<Bullet> bullets;
 	protected String type;
-	protected static int price;
 	
 	public plants(double positionX, double positionY, Pane plantImage){
 		super(positionX, positionY, 0, 0, plantImage);
@@ -18,10 +17,6 @@ public class plants extends actor{
 	
 	public void detectEnemy() {
 		
-	}
-	
-	public static int getPrice() {
-		return price;
 	}
 	
 	public Bullet attack(Pane p) {
@@ -35,10 +30,40 @@ public class plants extends actor{
 }
 
 class PeaShooter extends plants{
+	private static int price = 100;
+	private static long timeLeftToPlant = 0;
+	private static long replantTime;
+	private static long placeTime;
+	
 	public PeaShooter(double positionX, double positionY) {
 		super(positionX, positionY, form_image());
 		this.type = "peashooter";
-		this.price = 100;
+		replantTime = 10;
+		placeTime = System.nanoTime();
+	}
+	
+	public static void resetTimeLeftToPlant() {
+		timeLeftToPlant = replantTime;
+	}
+	
+	public static void setPlaceTime(long time) {
+		placeTime = time;
+	}
+	
+	public static long getReplantTime() {
+		return replantTime;
+	}
+	
+	public static long getPlaceTime() {
+		return placeTime;
+	}
+	
+	public static void setTimeLeftToPlant(long time) {
+		timeLeftToPlant = time;
+	}
+	
+	public static long getTimeLeftToPlant() {
+		return timeLeftToPlant;
 	}
 	
 	private static Pane form_image() {
@@ -47,6 +72,10 @@ class PeaShooter extends plants{
 		Pane pane = new Pane(view);
 		
 		return pane;
+	}
+	
+	public static int getPrice() {
+		return price;
 	}
 	
 	public Bullet shoot(Pane p) {
@@ -63,9 +92,42 @@ class PeaShooter extends plants{
 }
 
 class Sunflower extends plants{
+	
+	private static int price = 50;
+
+	private static long timeLeftToPlant = 0;
+	private static long replantTime;
+	private static long placeTime;
+	
 	public Sunflower(double positionX, double positionY) {
 		super(positionX, positionY, form_image());
 		this.type = "sunflower";
+		replantTime = 10;
+		placeTime = System.nanoTime();
+	}
+	
+	public static void resetTimeLeftToPlant() {
+		timeLeftToPlant = replantTime;
+	}
+	
+	public static void setPlaceTime(long time) {
+		placeTime = time;
+	}
+	
+	public static long getReplantTime() {
+		return replantTime;
+	}
+	
+	public static long getPlaceTime() {
+		return placeTime;
+	}
+	
+	public static void setTimeLeftToPlant(long time) {
+		timeLeftToPlant = time;
+	}
+	
+	public static long getTimeLeftToPlant() {
+		return timeLeftToPlant;
 	}
 	
 	private static Pane form_image() {
@@ -74,6 +136,10 @@ class Sunflower extends plants{
 		Pane pane = new Pane(view);
 		
 		return pane;
+	}
+	
+	public static int getPrice() {
+		return price;
 	}
 	
 }

@@ -52,20 +52,26 @@ public class actor {
     }
  
     public void update(double time){
-    	
-        positionX += velocityX * time;
-        positionY += velocityY * time;
-        this.image.setTranslateX(positionX);
-        this.image.setTranslateY(this.positionY);
-        
-        if(this instanceof Bullet) {
-        	Bullet bullet = (Bullet)this;
-        	if(bullet.getSprite().getTranslateX() >= 1050) {
-        		bullet.setVelocity(0, 0);
-        		bullet.setPosition(0, 0);
-        		bullet.getSprite().setVisible(false);
-        	}
-        }
+    	if(!Main.getCurrentBase().getIsGamePaused()) {
+	        positionX += velocityX * time;
+	        positionY += velocityY * time;
+	        this.image.setTranslateX(positionX);
+	        this.image.setTranslateY(this.positionY);
+	        
+	        if(this instanceof Bullet) {
+	        	Bullet bullet = (Bullet)this;
+	        	if(bullet.getSprite().getTranslateX() >= 1050) {
+	        		bullet.setVelocity(0, 0);
+	        		bullet.setPosition(0, 0);
+	        		bullet.getSprite().setVisible(false);
+	        	}
+	        }
+    	}
+    	else {
+			for(Bullet b: Main.getCurrentBase().getBulletsList()) {
+				b.setStartTime(System.nanoTime());
+			}
+		}
     }
  
     public Rectangle2D getBoundary(){
