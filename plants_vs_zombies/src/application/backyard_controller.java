@@ -4,6 +4,7 @@ import java.net.URL;
 import application.actor.*;
 
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Random;
 import java.util.ResourceBundle;
 
@@ -14,6 +15,7 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
@@ -32,11 +34,16 @@ public class backyard_controller implements Initializable{
 	@FXML
 	public StackPane base;
 	
+	@FXML
+	public Label scoreLabel;
+	
 	public ArrayList<Bullet> bullets = new ArrayList<Bullet>();
 //	change this list to list of all bullet shooters
 	public ArrayList<plants> peashooterList = new ArrayList<plants>();
 	public ArrayList<plants> cardPlantList = new ArrayList<plants>();
 	private ArrayList<Pane> sunTokenList = new ArrayList<Pane>();
+	
+	private int score = 50;
 	
 //	The drag and drop Images, have to be intialised, add chomper etc...
 	private Pane peashooter;
@@ -60,6 +67,9 @@ public class backyard_controller implements Initializable{
 //		BACKYARD SETUP!
 		
 		Pane pane = null;
+		
+//		Score board setup
+		this.updateScoreBoard();
 		
 //		for drag and drop of sunflower, completed
 		pane = new Pane(new ImageView(new Image("sunflower_card.png", 70, 90, false, true)));
@@ -103,8 +113,8 @@ public class backyard_controller implements Initializable{
 		
 //		Ingame menu button
 		m = new ingameMenu();
-		pause(m.getSprite());
-		pause(m.getSprite());
+//		pause(m.getSprite());
+		pause(m.getSprite(), this);
 		base.getChildren().add(m.getSprite());
 		
 		
@@ -116,9 +126,14 @@ public class backyard_controller implements Initializable{
 		sh = new shovel();
 		base.getChildren().add(sh.getSprite());
 		
+//		sun token display
+//		Label sunDisplay = new Label("100");
+//		base.getChildren().add(sunDisplay);
+		
 		
 //		Sun Token
 //		TODO: remove suns after some time
+//		TODO: collect suns
 		generateSunTokens(this);
 		
 //		base.setOnMouseMoved(new EventHandler<MouseEvent>() {
@@ -130,8 +145,11 @@ public class backyard_controller implements Initializable{
 //			}
 //		});
 		
+		
 	}
 	
+	
+//	generates new sun tokens every 10 seconds and places them(animates)
 	public void generateSunTokens(backyard_controller base) {
 		long[] startTime = new long[] {System.nanoTime()};
 		Pane pane[] = new Pane[] {null};
@@ -142,23 +160,27 @@ public class backyard_controller implements Initializable{
 			@Override
 			public void handle(long currentTime) {
 				
-				if((currentTime - startTime[0])/1000000000 >= 10) {
-					pane[0] = sunToken.generateSun();
-					y[0] = pane[0].getTranslateY();
-					pane[0].setTranslateY(0);
-					base.getBase().getChildren().add(pane[0]);
-					base.addToSunTokenList(pane[0]);
-					startTime[0] = currentTime;
-					backyard_controller.bringComponentsOnTop();
-				}
-				if(pane[0] != null) {
-					if(y[0] >= pane[0].getTranslateY()) {
-						pane[0].setTranslateY(2*((currentTime - startTime[0])/10000000));
+				if(!base.getIsGamePaused()) {
+					
+					if((currentTime - startTime[0])/1000000000 >= 10) {
+						pane[0] = sunToken.generateSun();
+						base.collectSun(pane[0], base);
+						y[0] = pane[0].getTranslateY();
+						pane[0].setTranslateY(0);
+						base.getBase().getChildren().add(pane[0]);
+						base.addToSunTokenList(pane[0]);
+						startTime[0] = currentTime;
+						base.bringComponentsOnTop();
 					}
-					else {
-						
-						pane[0] = null;
-						y[0] = -1;
+					if(pane[0] != null) {
+						if(y[0] >= pane[0].getTranslateY()) {
+							pane[0].setTranslateY(2*((currentTime - startTime[0])/10000000));
+						}
+						else {
+							
+							pane[0] = null;
+							y[0] = -1;
+						}
 					}
 				}
 			}
@@ -192,6 +214,14 @@ public class backyard_controller implements Initializable{
 	
 	public ArrayList<plants> getCardPlantList(){
 		return this.cardPlantList;
+	}
+	
+	public Label getScoreBoard() {
+		return this.scoreLabel;
+	}
+	
+	public void updateScoreBoard() {
+		this.getScoreBoard().setText(Integer.toString(this.getScore()));
 	}
 	
 	
@@ -253,6 +283,7 @@ public class backyard_controller implements Initializable{
 				o = new PeaShooter(positionX, positionY);
 	//			CHANGE THIS!! ONLY ADDING PEASHOOTERS NOW!! THIS LIST IS FOR ALL BULLET PLANTS
 				this.peashooterList.add(o);
+				this.setScore(this.getScore() - PeaShooter.getPrice());
 				
 			}
 			else if(plantChoice.equals("sunflower")) {
@@ -263,13 +294,14 @@ public class backyard_controller implements Initializable{
 		bringComponentsOnTop();
 	}
 	
-	public void pause(Pane p) {
+	public void pause(Pane p, backyard_controller base) {
 		p.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent arg0) {
 				System.out.println("clicking menu");
 				Stage s = Main.getStage();
 				s.setScene(Main.getInGameScene());
+				base.setIsGamePaused(true);
 				
 				Main.playMainPageSound();
 				
@@ -277,10 +309,40 @@ public class backyard_controller implements Initializable{
 		});
 	}
 	
-	public static void bringComponentsOnTop() {
+	public int getScore() {
+		return this.score;
+	}
+	
+	public void setScore(int newScore) {
+		this.score = newScore;
+		this.updateScoreBoard();
+	}
+	
+	public void collectSun(Pane p, backyard_controller base) {
+		p.setOnMouseClicked(new EventHandler<MouseEvent>() {
+
+			@Override
+			public void handle(MouseEvent arg0) {
+				p.setTranslateX(-10);
+				p.setTranslateY(-10);
+				p.setVisible(false);
+				base.getSunTokenList().remove(p);
+				
+				base.setScore(base.getScore() + 50);
+				System.out.println("new score is: "+base.getScore());
+			}
+		});
+	}
+	
+	public void bringComponentsOnTop() {
 
 		m.getSprite().toFront();
+		
+		for(Pane p: this.getSunTokenList()) {
+			p.toFront();
+		}
 		sh.getSprite().toFront();
+		
 //		System.out.println("calling");
 	}
 	

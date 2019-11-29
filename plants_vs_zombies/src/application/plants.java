@@ -9,6 +9,7 @@ import javafx.scene.layout.Pane;
 public class plants extends actor{
 	private ArrayList<Bullet> bullets;
 	protected String type;
+	protected static int price;
 	
 	public plants(double positionX, double positionY, Pane plantImage){
 		super(positionX, positionY, 0, 0, plantImage);
@@ -17,6 +18,10 @@ public class plants extends actor{
 	
 	public void detectEnemy() {
 		
+	}
+	
+	public static int getPrice() {
+		return price;
 	}
 	
 	public Bullet attack(Pane p) {
@@ -33,6 +38,7 @@ class PeaShooter extends plants{
 	public PeaShooter(double positionX, double positionY) {
 		super(positionX, positionY, form_image());
 		this.type = "peashooter";
+		this.price = 100;
 	}
 	
 	private static Pane form_image() {

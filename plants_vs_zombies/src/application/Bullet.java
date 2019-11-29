@@ -17,6 +17,9 @@ public class Bullet extends actor{
 	public Long getStartTime() {
 		return this.startTime;
 	}
+	public void setStartTime(long time) {
+		this.startTime = time;
+	}
 }
 
 class PeaBullet extends Bullet{

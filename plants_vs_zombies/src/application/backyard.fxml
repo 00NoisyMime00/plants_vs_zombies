@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.text.Font?>
 
 <StackPane fx:id="base" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1110.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.backyard_controller">
    <children>
@@ -32,6 +34,11 @@
                   <Image url="@../../resources/timer.png" />
                </image>
             </ImageView>
+            <Label fx:id="scoreLabel" alignment="CENTER" layoutX="156.0" layoutY="11.0" prefHeight="35.0" prefWidth="100.0" style="-fx-background-color: #fee98b;" text="25" textAlignment="CENTER" translateY="-2.0">
+               <font>
+                  <Font name="SansSerif Bold" size="30.0" />
+               </font>
+            </Label>
          </children>
       </Pane>
    </children>

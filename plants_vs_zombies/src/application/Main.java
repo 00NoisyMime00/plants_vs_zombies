@@ -1,10 +1,12 @@
 package application;
 	
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -27,6 +29,9 @@ public class Main extends Application {
 	
 	private static MediaPlayer mediaPlayer;
 	
+//	class Objects
+	private static backyard_controller base;
+	
 	@Override
 	public void start(Stage primaryStage) {
 		try {
@@ -38,7 +43,7 @@ public class Main extends Application {
 //			backyard
 			loader = new FXMLLoader(getClass().getResource("/application/backyard.fxml"));
 			root = loader.load();
-			backyard_controller base = loader.getController();
+			Main.base = loader.getController();
 			
 			Scene sceneBackyard = new Scene(root);
 			
@@ -68,48 +73,14 @@ public class Main extends Application {
 			primaryStage.setScene(sceneMainPage);
 			
 			
-			Long prevTime[] = new Long[] {new Long(System.nanoTime()).longValue()};
 			
-//			TODO: convert to a separate handler class
-			new AnimationTimer() {
 				
-				@Override
-				public void handle(long currentTime) {
-					
-					if(!base.getIsGamePaused()) {
-						if((currentTime - prevTime[0])/1000000000.0 >= 2) {
-							for(plants p: base.getpeashooterList()) {
-								base.getBulletsList().add(p.attack(base.getBase()));
-								prevTime[0] = currentTime;
-								backyard_controller.bringComponentsOnTop();
-							}
-						}
-						
-						ArrayList<plants> allPlants = base.getCardPlantList();
-						for(plants p: allPlants) {
-							base.dragPlantsToPlace(p.getSprite(), p.getType());
-						}
-						
-					}
-					else {
-//						TODO
-					}
-					
-				}
-			}.start();
+//			Handle all plants eg. peashooter shooting
+			plantsActionHandler.getInstance(base).start();
 			
-			Long prevTimeLong[] = new Long[] {new Long(System.nanoTime())};
-			new AnimationTimer() {
-				
-				@Override
-				public void handle(long currentTIme) {
-					for(Bullet b: base.getBulletsList()) {
-						b.update((currentTIme - b.getStartTime())/10000000000.0);
-					}
-					
-					
-				}
-			}.start();
+			
+//			Handles bullets movement
+			bulletsMovementHandler.getInstance(base).start();
 			
 			playMainPageSound();
 	
@@ -161,7 +132,111 @@ public class Main extends Application {
 		return sceneMainPage;
 	}
 	
+	public static backyard_controller getCurrentBase() {
+		return Main.base;
+	}
+	
+	public static void setBase(backyard_controller base) {
+		Main.base = base;
+	}
+	
 	public static void main(String[] args) {
 		launch(args);
 	}
+	
+	public static void startNewGame(Stage primaryStage) throws IOException{
+		FXMLLoader loader = new FXMLLoader(Main.class.getResource("/application/backyard.fxml"));
+		Parent root = loader.load();
+		Main.base = loader.getController();
+		
+		Scene sceneBackyard = new Scene(root);
+		
+		sceneBackyard.getStylesheets().add(Main.class.getResource("application.css").toExternalForm());
+		Main.sceneBackyard = sceneBackyard;
+		primaryStage.setScene(sceneBackyard);
+		
+		primaryStage.setResizable(false);
+		primaryStage.show();
+	}
+}
+
+class plantsActionHandler extends AnimationTimer{
+	
+	private Long prevTime[] = new Long[] {new Long(System.nanoTime()).longValue()};
+	private backyard_controller base;
+	
+	private static plantsActionHandler instance;
+	
+	private plantsActionHandler(backyard_controller base) {
+		this.base = base;
+	}
+	
+	public static plantsActionHandler getInstance(backyard_controller base) {
+		if(instance == null) {
+			instance = new plantsActionHandler(base);
+		}
+		
+		return instance;
+	}
+
+	@Override
+	public void handle(long currentTime) {
+		
+		if(!base.getIsGamePaused()) {
+			if((currentTime - prevTime[0])/1000000000.0 >= 2) {
+				for(plants p: base.getpeashooterList()) {
+					base.getBulletsList().add(p.attack(base.getBase()));
+					prevTime[0] = currentTime;
+					base.bringComponentsOnTop();
+				}
+			}
+			
+			ArrayList<plants> allPlants = base.getCardPlantList();
+			for(plants p: allPlants) {
+				base.dragPlantsToPlace(p.getSprite(), p.getType());
+			}
+			
+		}
+		else {
+//			TODO
+			System.out.println("Game Paused");
+		}
+		
+	}
+	
+}
+
+class bulletsMovementHandler extends AnimationTimer{
+	
+	private static bulletsMovementHandler instance;
+	private backyard_controller base;
+	
+	private bulletsMovementHandler(backyard_controller base) {
+		this.base = base;
+	}
+
+	
+	public static bulletsMovementHandler getInstance(backyard_controller base) {
+		if(instance == null) {
+			instance = new bulletsMovementHandler(base);
+		}
+		
+		return instance;
+	}
+	
+	@Override
+	public void handle(long currentTIme) {
+		if(!base.getIsGamePaused()) {
+			for(Bullet b: base.getBulletsList()) {
+				b.update((currentTIme - b.getStartTime())/10000000000.0);
+			}
+		}
+		else {
+			for(Bullet b: base.getBulletsList()) {
+				b.setStartTime(currentTIme);
+			}
+		}
+		
+	}
+	
 }

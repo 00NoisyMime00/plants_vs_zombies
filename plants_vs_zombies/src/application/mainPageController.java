@@ -4,6 +4,8 @@ package application;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import com.sun.media.jfxmediaimpl.platform.Platform;
+
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -59,6 +61,14 @@ public class mainPageController implements Initializable{
 				if(b.getText().equals("startGame")) {
 					System.out.println("startgame clicked..");
 					Stage stage = Main.getStage();
+					stage.close();
+					try {
+						Main.startNewGame(new Stage());
+						System.out.println("trying");
+					}
+					catch(Exception e) {
+						e.printStackTrace();
+					}
 					stage.setScene(Main.getBackyarScene());
 					Main.playGameSound();
 				}
@@ -68,6 +78,7 @@ public class mainPageController implements Initializable{
 				else if(b.getText().equals("exitButton")) {
 					System.out.println("clicking exit..");
 					Main.getStage().close();
+					System.exit(0);
 				}
 				
 			}
