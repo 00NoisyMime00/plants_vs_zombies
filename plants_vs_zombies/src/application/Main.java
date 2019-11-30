@@ -3,6 +3,7 @@ package application;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Base64;
 
 import javafx.application.Platform;
 import javafx.animation.AnimationTimer;
@@ -27,6 +28,7 @@ public class Main extends Application {
 	private static Scene sceneBackyard;
 	private static Scene sceneInGameMenu;
 	private static Scene sceneMainPage;
+	private static Scene sceneLevelPage;
 	
 	private static MediaPlayer mediaPlayer;
 	
@@ -64,6 +66,16 @@ public class Main extends Application {
 //			primaryStage.setScene(sceneInGameMenu);
 			
 			
+//			Choose Level Page
+			loader = new FXMLLoader(getClass().getResource("/application/Levels.fxml"));
+			root = loader.load();
+			levelController levelPage = loader.getController();
+			
+			Scene sceneLevelPage = new Scene(root);
+			Main.sceneLevelPage = sceneLevelPage;
+			primaryStage.setScene(sceneLevelPage);
+			
+			
 //			Main page
 			loader = new FXMLLoader(getClass().getResource("/application/mainPage.fxml"));
 			root = loader.load();
@@ -89,6 +101,20 @@ public class Main extends Application {
 			
 //			Handles replanting time
 			replantTimeHandler.getInstance().start();
+			
+//			Handle generating zombies
+			zombieGeneratorHandler.getInstance().start();
+			
+//			Handle zombie Movement
+			zombieMovementHandler.getInstance().start();
+			
+
+//			detect bullet collision
+			bulletCollisionHandler.getInstance().start();
+			
+//			pausing game at start
+			this.base.setIsGamePaused(true);
+			
 			
 			playMainPageSound();
 	
@@ -130,6 +156,10 @@ public class Main extends Application {
 	
 	public static Scene getBackyarScene() {
 		return sceneBackyard;
+	}
+	
+	public static Scene getLevelPageScene() {
+		return sceneLevelPage;
 	}
 	
 	public static Scene getInGameScene() {
@@ -193,7 +223,13 @@ class plantsActionHandler extends AnimationTimer{
 		if(!base.getIsGamePaused()) {
 			if((currentTime - prevTime[0])/1000000000.0 >= 2) {
 				for(plants p: base.getpeashooterList()) {
-					base.getBulletsList().add(p.attack(base.getBase()));
+					int yIndex = backyard_controller.getIndices(p.getPostionX(), p.getPositionY())[1];
+					
+					if(base.getZombieMatrix()[0][yIndex] > 0 || base.getZombieMatrix()[1][yIndex] > 0 || base.getZombieMatrix()[2][yIndex] > 0 || base.getZombieMatrix()[3][yIndex] > 0 || base.getZombieMatrix()[4][yIndex] > 0 || base.getZombieMatrix()[5][yIndex] > 0 || base.getZombieMatrix()[6][yIndex] > 0 || base.getZombieMatrix()[7][yIndex] > 0 || base.getZombieMatrix()[8][yIndex] > 0) {
+						base.getBulletsList().add(p.attack(base.getBase()));
+						System.out.println("attacking!");
+					}
+					
 					prevTime[0] = currentTime;
 					base.bringComponentsOnTop();
 				}
@@ -310,6 +346,129 @@ class replantTimeHandler extends AnimationTimer{
 			
 //			walnut
 
+		}
+		else {
+			Sunflower.setPlaceTime(System.nanoTime());
+		}
+	}
+	
+}
+
+class zombieGeneratorHandler extends AnimationTimer{
+	private static zombieGeneratorHandler instance;
+	
+	private zombieGeneratorHandler() {
+		
+	}
+	
+	public static zombieGeneratorHandler getInstance() {
+		if(instance == null) {
+			instance = new zombieGeneratorHandler();
+		}
+		return instance;
+	}
+
+	@Override
+	public void handle(long currentTime) {
+		if(!Main.getCurrentBase().getIsGamePaused()) {
+			
+			if((currentTime - Zombie.getLastGeneratedTime()) / 1000000000 >= 20) {
+				Main.getCurrentBase().getBase().getChildren().add(Zombie.create_zombie("normal zombie").getSprite());
+				System.out.println("generating");
+			}
+			
+			Main.getCurrentBase().bringComponentsOnTop();
+		}
+		else {
+			Zombie.setLastGeneratedTime(System.nanoTime());
+		}
+		
+	}
+	
+}
+
+class zombieMovementHandler extends AnimationTimer{
+	private static zombieMovementHandler instance;
+	
+	private zombieMovementHandler() {
+	}
+	
+	public static zombieMovementHandler getInstance() {
+		if(instance == null) 
+			instance = new zombieMovementHandler();
+		return instance;
+	}
+
+	@Override
+	public void handle(long currentTimer) {
+		if(Zombie.getZombiesList() != null) {
+			for(Zombie z: Zombie.getZombiesList()) {
+				
+				z.update((currentTimer - z.getStartTime())/10000000000.0);
+				
+				int old[] = z.getOldIndices();
+				int newIndices[] = backyard_controller.getIndices(z.getPostionX(), z.getPositionY());
+				
+				if(old[0] != newIndices[0]) {
+					if(newIndices[0] >= 0 && newIndices[1] >= 0) {
+						Main.getCurrentBase().setZombieMatrix(newIndices[0], newIndices[1], Main.getCurrentBase().getZombieMatrix()[newIndices[0]][newIndices[1]] + 1);
+						Main.getCurrentBase().setZombieMatrix(old[0], old[1], Main.getCurrentBase().getZombieMatrix()[newIndices[0]][newIndices[1]] - 1);
+				
+						Main.getCurrentBase().setActualZombieMatrix(newIndices[0], newIndices[1], z);
+						
+						z.setOldIndices(newIndices);
+						System.out.println("updated to "+newIndices[0]+" "+newIndices[1]);
+					}
+					else {
+						System.out.println("dead!!!!");
+					}
+				}
+				
+			}
+		}
+	}
+	
+}
+
+class bulletCollisionHandler extends AnimationTimer{
+	
+	private static bulletCollisionHandler instance;
+	
+	private bulletCollisionHandler() {
+		
+	}
+	
+	public static bulletCollisionHandler getInstance() {
+		if(instance == null) {
+			instance = new bulletCollisionHandler();
+		}
+		
+		return instance;
+	}
+
+	@Override
+	public void handle(long currentTime) {
+		ArrayList<Bullet> toRemove = new ArrayList<Bullet>();
+		
+		for(Bullet b: Main.getCurrentBase().getBulletsList()) {
+			int[] indices = backyard_controller.getIndices(b.getPostionX(), b.getPositionY());
+			
+			int x = indices[0];
+			int y = indices[1];
+			
+			if(x < 8 && y < 8 && x >= 0 && y >= 0) {
+				if(Main.getCurrentBase().getZombieMatrix()[x][y] > 0 ) {
+					b.getSprite().setVisible(false);
+					b.setVelocity(0, 0);
+					b.setPosition(0, 0);
+					toRemove.add(b);
+
+					
+				}
+			}
+		}
+		for(Bullet b: toRemove) {
+			Main.getCurrentBase().getBulletsList().remove(b);
 		}
 	}
 	

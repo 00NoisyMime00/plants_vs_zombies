@@ -61,12 +61,8 @@ public class mainPageController implements Initializable{
 				if(b.getText().equals("startGame")) {
 					System.out.println("startgame clicked..");
 					Stage stage = Main.getStage();
-					if(Main.getCurrentBase().getIsGamePaused()) {
-						Main.getCurrentBase().setIsGamePaused(false);
-						Main.getCurrentBase().resetGame();
-					}
-					stage.setScene(Main.getBackyarScene());
-					Main.playGameSound();
+
+					stage.setScene(Main.getLevelPageScene());
 				}
 				else if(b.getText().equals("loadGame")) {
 					System.out.println("clicked load game..");

@@ -58,12 +58,23 @@ public class backyard_controller implements Initializable{
 	private static Pane snowPeaShooterCard;
 	private static Pane chomperCard;
 	
+	private static long pauseTime;
+	
 	
 //	Shovel for each backyard
 	private static shovel sh;
 	
 //	2D matrix for each backyard
 	private int[][] backyardMatrix = new int[9][9];
+	
+//	2D matrix for marking Zombie positions
+	private int[][] zombieMatrix = new int[9][9];
+	
+//	2D matrix that stores actual plants for attack purposes
+	private plants[][] actualPlantMatrix = new plants[9][9];
+	
+//	2D matrix that stores actual zombies for attack purposes
+	private Zombie[][][] actualZombieMatrix = new Zombie[9][9][20];
 	
 	private static ingameMenu m;
 	
@@ -138,15 +149,9 @@ public class backyard_controller implements Initializable{
 //		Shovel
 		sh = new shovel();
 		base.getChildren().add(sh.getSprite());
-		
-//		sun token display
-//		Label sunDisplay = new Label("100");
-//		base.getChildren().add(sunDisplay);
-		
+	
 		
 //		Sun Token
-//		TODO: remove suns after some time
-//		TODO: collect suns
 		generateSunTokens(this);
 		
 //		base.setOnMouseMoved(new EventHandler<MouseEvent>() {
@@ -255,6 +260,71 @@ public class backyard_controller implements Initializable{
 		return false;
 	}
 	
+	public static long getPauseTime() {
+		return pauseTime;
+	}
+	
+	public static void setPauseTime(long time) {
+		pauseTime = time;
+	}
+	
+	public static double getYCoordinate(int y) {
+		return y*100 + 80;
+	}
+	
+	public int[][] getBackyardMatrix(){
+		return backyardMatrix;
+	}
+	
+	public void setBackyardMatrix(int x, int y, int value) {
+		this.backyardMatrix[x][y] = value; 
+	}
+	
+	public int[][] getZombieMatrix(){
+		return this.zombieMatrix;
+	}
+	
+	public void setZombieMatrix(int x, int y, int value) {
+		this.zombieMatrix[x][y] = value; 
+	}
+	
+	public Zombie[][][] getActualZombieMatrix(){
+		return this.actualZombieMatrix;
+	}
+	
+	public void setActualZombieMatrix(int x, int y, Zombie z) {
+		this.actualZombieMatrix[x][y][this.getZombieMatrix()[x][y] + 1] = z; 
+	}
+	
+	public plants[][] getActualPlantMatrix(){
+		return this.actualPlantMatrix;
+	}
+	
+	public void setActualPlantMatrix(int x, int y, plants p) {
+		this.actualPlantMatrix[x][y] = p; 
+	}
+	
+	public static int[] getIndices(double x, double y) {
+		int xIndex = (int)(x - 255 + 20)/100;
+		int yIndex = (int)(y - 80)/100;
+		
+//		just to adjust
+		if(x > 420)
+			xIndex+=1;
+		if(y > 815)
+			xIndex++;
+		
+//		checking if inside backyard or not
+//		if(xIndex >= 0 && xIndex <= 8 && yIndex >=0 && yIndex <= 4) {
+//			
+//		}
+		int[] cor = new int[2];
+		cor[0] = xIndex;
+		cor[1] = yIndex;
+		
+		return cor;
+	}
+	
 	public static Pane getCard(String name) {
 		if(name.equals("sunflower")) {
 			return sunflowerCard;
@@ -354,6 +424,7 @@ public class backyard_controller implements Initializable{
 		p.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent arg0) {
+				backyard_controller.setPauseTime(System.nanoTime());
 				System.out.println("clicking menu");
 				Stage s = Main.getStage();
 				s.setScene(Main.getInGameScene());
@@ -384,7 +455,6 @@ public class backyard_controller implements Initializable{
 				p.setTranslateY(-10);
 				p.setVisible(false);
 				base.getSunTokenList().remove(s);
-				
 				base.setScore(base.getScore() + 50);
 				System.out.println("new score is: "+base.getScore());
 			}
@@ -407,7 +477,7 @@ public class backyard_controller implements Initializable{
 		return this.sunTokenList;
 	}
 	
-//	INCOMPLETE: 
+//	INCOMPLETE: Zombies
 	public void resetGame() {
 		for(plants p: this.getpeashooterList()) {
 			p.getSprite().setVisible(false);

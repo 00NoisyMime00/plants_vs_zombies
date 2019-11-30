@@ -21,6 +21,11 @@ public class actor {
     private double velocityY;
     private double width;
     private double height;
+    
+    private double startPositionX;
+    private double startPositionY;
+    
+    protected long startTime;
  
     public actor(double positionX, double positionY, double velocityX, double velocityY, Pane image) {
     	this.positionX = positionX;
@@ -33,10 +38,30 @@ public class actor {
     	this.width = image.getWidth();
     	this.height = image.getHeight();
     	
+    	this.startTime = System.nanoTime();
+    	this.startPositionX = positionX;
+    	this.startPositionY = positionY;
+    	
     }
     
     public Pane getSprite() {
     	return this.image;
+    }
+    
+    public double getStartPositionX() {
+    	return this.positionX;
+    }
+    
+    public double getStartPositionY() {
+    	return this.startPositionY;
+    }
+    
+    public void setStartPositionX(double x) {
+    	this.startPositionX = x;
+    }
+    
+    public void setStartPositionY(double y) {
+    	this.startPositionY = y;
     }
     
     public void setVelocity(double velocityX, double velocityY) {
@@ -50,17 +75,25 @@ public class actor {
     	this.image.setTranslateX(this.positionX);
     	this.image.setTranslateY(this.positionY);
     }
+    
+    public double getPostionX() {
+    	return this.positionX;
+    }
+    
+    public double getPositionY() {
+    	return this.positionY;
+    }
  
     public void update(double time){
     	if(!Main.getCurrentBase().getIsGamePaused()) {
-	        positionX += velocityX * time;
-	        positionY += velocityY * time;
+	        positionX = this.startPositionX + velocityX * time;
+	        positionY = this.startPositionY + velocityY * time;
 	        this.image.setTranslateX(positionX);
 	        this.image.setTranslateY(this.positionY);
 	        
 	        if(this instanceof Bullet) {
 	        	Bullet bullet = (Bullet)this;
-	        	if(bullet.getSprite().getTranslateX() >= 1050) {
+	        	if(bullet.getSprite().getTranslateX() >= 990) {
 	        		bullet.setVelocity(0, 0);
 	        		bullet.setPosition(0, 0);
 	        		bullet.getSprite().setVisible(false);
@@ -68,9 +101,9 @@ public class actor {
 	        }
     	}
     	else {
-			for(Bullet b: Main.getCurrentBase().getBulletsList()) {
-				b.setStartTime(System.nanoTime());
-			}
+			this.setStartTime(System.nanoTime());
+			this.startPositionX = this.positionX;
+			this.startPositionY = this.positionY;
 		}
     }
  
@@ -81,6 +114,14 @@ public class actor {
     public boolean intersect(actor s){
         return s.getBoundary().intersects( this.getBoundary() );
     }
+    
+    public long getStartTime() {
+		return this.startTime;
+	}
+	
+	public void setStartTime(long time) {
+		this.startTime = time;
+	}
 }
 
 
