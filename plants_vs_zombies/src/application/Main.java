@@ -182,6 +182,7 @@ public class Main extends Application {
 		launch(args);
 	}
 	
+//	DOUBT!! are you using it??????????
 	public static void startNewGame(Stage primaryStage) throws IOException{
 		FXMLLoader loader = new FXMLLoader(Main.class.getResource("/application/backyard.fxml"));
 		Parent root = loader.load();
@@ -227,7 +228,6 @@ class plantsActionHandler extends AnimationTimer{
 					
 					if(base.getZombieMatrix()[0][yIndex] > 0 || base.getZombieMatrix()[1][yIndex] > 0 || base.getZombieMatrix()[2][yIndex] > 0 || base.getZombieMatrix()[3][yIndex] > 0 || base.getZombieMatrix()[4][yIndex] > 0 || base.getZombieMatrix()[5][yIndex] > 0 || base.getZombieMatrix()[6][yIndex] > 0 || base.getZombieMatrix()[7][yIndex] > 0 || base.getZombieMatrix()[8][yIndex] > 0) {
 						base.getBulletsList().add(p.attack(base.getBase()));
-						System.out.println("attacking!");
 					}
 					
 					prevTime[0] = currentTime;
@@ -338,17 +338,67 @@ class replantTimeHandler extends AnimationTimer{
 			}
 			
 //			peashooter
-			
-			
-//			chomper
+			if(PeaShooter.getTimeLeftToPlant() > 0) {
+				backyard_controller.getCard("peashooter").setOpacity(0.5);
+				PeaShooter.setTimeLeftToPlant(PeaShooter.getReplantTime() - ((currentTime - PeaShooter.getPlaceTime())/1000000000) );
+			}
+			else {
+				if(Main.getCurrentBase().checkEnoughMoney(PeaShooter.getPrice())) {
+					backyard_controller.getCard("peashooter").setOpacity(1);
+				}
+				else {
+					backyard_controller.getCard("peashooter").setOpacity(0.5);
+				}
+			}
 			
 //			snowpeashooter
+			if(snowPeaShooter.getTimeLeftToPlant() > 0) {
+				backyard_controller.getCard("snowpeashooter").setOpacity(0.5);
+				snowPeaShooter.setTimeLeftToPlant(snowPeaShooter.getReplantTime() - ((currentTime - snowPeaShooter.getPlaceTime())/1000000000) );
+			}
+			else {
+				if(Main.getCurrentBase().checkEnoughMoney(snowPeaShooter.getPrice())) {
+					backyard_controller.getCard("snowpeashooter").setOpacity(1);
+				}
+				else {
+					backyard_controller.getCard("snowpeashooter").setOpacity(0.5);
+				}
+			}
+			
+//			chomper
+			if(Chomper.getTimeLeftToPlant() > 0) {
+				backyard_controller.getCard("chomper").setOpacity(0.5);
+				Chomper.setTimeLeftToPlant(Chomper.getReplantTime() - ((currentTime - Chomper.getPlaceTime())/1000000000) );
+			}
+			else {
+				if(Main.getCurrentBase().checkEnoughMoney(Chomper.getPrice())) {
+					backyard_controller.getCard("chomper").setOpacity(1);
+				}
+				else {
+					backyard_controller.getCard("chomper").setOpacity(0.5);
+				}
+			}
 			
 //			walnut
+			if(Walnut.getTimeLeftToPlant() > 0) {
+				backyard_controller.getCard("walnut").setOpacity(0.5);
+				Walnut.setTimeLeftToPlant(Walnut.getReplantTime() - ((currentTime - Walnut.getPlaceTime())/1000000000) );
+			}
+			else {
+				if(Main.getCurrentBase().checkEnoughMoney(Walnut.getPrice())) {
+					backyard_controller.getCard("walnut").setOpacity(1);
+				}
+				else {
+					backyard_controller.getCard("walnut").setOpacity(0.5);
+				}
+			}
 
 		}
 		else {
 			Sunflower.setPlaceTime(System.nanoTime());
+			PeaShooter.setPlaceTime(System.nanoTime());
+			snowPeaShooter.setPlaceTime(System.nanoTime());
+			Chomper.setPlaceTime(System.nanoTime());
 		}
 	}
 	
@@ -415,6 +465,7 @@ class zombieMovementHandler extends AnimationTimer{
 						Main.getCurrentBase().setZombieMatrix(old[0], old[1], Main.getCurrentBase().getZombieMatrix()[newIndices[0]][newIndices[1]] - 1);
 				
 						Main.getCurrentBase().setActualZombieMatrix(newIndices[0], newIndices[1], z);
+						Main.getCurrentBase().removeActualZombieMatrix(old[0], old[1]);
 						
 						z.setOldIndices(newIndices);
 						System.out.println("updated to "+newIndices[0]+" "+newIndices[1]);
@@ -462,6 +513,21 @@ class bulletCollisionHandler extends AnimationTimer{
 					b.setVelocity(0, 0);
 					b.setPosition(0, 0);
 					toRemove.add(b);
+					
+					Zombie z = Main.getCurrentBase().getActualZombieMatrix()[x][y][0];
+					z.setHealth(Math.max(z.getHealth() - b.getDamage(), 0));
+					if(z.getHealth() <= 0) {
+						
+						Main.getCurrentBase().getZombieMatrix()[x][y] -= 1;
+						for(int i = 1; i < 20; i++) {
+							Main.getCurrentBase().getActualZombieMatrix()[x][y][i - 1] = Main.getCurrentBase().getActualZombieMatrix()[x][y][i];
+						}
+						
+						z.getSprite().setVisible(false);
+						z.setPosition(-10, -10);
+						z.setVelocity(0, 0);
+						Zombie.getZombiesList().remove(z);
+					}
 
 					
 				}

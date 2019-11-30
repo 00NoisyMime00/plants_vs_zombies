@@ -21,6 +21,7 @@ public class Zombie extends actor{
 		allZombies.add(this);
 		lastGeneratedTime = System.nanoTime();
 		this.oldIndices = backyard_controller.getIndices(this.getPostionX(), this.getPositionY());
+		
 	}
 	
 	protected static int randNumberGenerator() {
@@ -79,27 +80,27 @@ public class Zombie extends actor{
 	}
 
 }
+
+
+
 class normal_zombie extends Zombie{
 	
 	public normal_zombie(double positionY) {
 		
 		super(positionY, form_image());
 		this.type = "normal zombie";
-		this.setVelocity(-50, 0);
+		this.setVelocity(-50, 0);	
 		
-		
+		this.setHealth(100);
 	}
-
-	
 	
 	private static Pane form_image() {
 		Pane pane = new Pane(new ImageView(new Image("normal_zombie.gif", 100, 100, false, true)));
 		return pane;
 	}
-	
-	
 
 }
+
 
 class dancing_zombie extends Zombie{
 	

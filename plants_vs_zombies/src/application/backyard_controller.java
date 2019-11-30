@@ -50,6 +50,9 @@ public class backyard_controller implements Initializable{
 //	The drag and drop Images, have to be intialised, add chomper etc...
 	private Pane peashooter;
 	private Pane sunflower;
+	private Pane snowpeashooter;
+	private Pane walnut;
+	private Pane chomper;
 	
 //	Side-card Images, have to be initialised
 	private static Pane peashooterCard;
@@ -113,25 +116,37 @@ public class backyard_controller implements Initializable{
 		base.getChildren().add(peashooter);
 		base.getChildren().add(pane);
 		
+//		for drag and drop of snowpea, INCOMPLETE
+		pane = new Pane(new ImageView(new Image("snowpea_card.png", 70, 90, false, true)));
+		snowPeaShooterCard = pane;
+		pane.setTranslateX(20);
+		pane.setTranslateY(210);
+		dragPlantsToPlace(pane, "snowpeashooter");
+		snowpeashooter = new Pane(new ImageView(new Image("icePeaShooter.png", 110, 90, false, true)));
+		snowpeashooter.setVisible(false);
+		base.getChildren().add(snowpeashooter);
+		base.getChildren().add(pane);
+		
 //		for drag and drop of chomper, INCOMPLETE
 		pane = new Pane(new ImageView(new Image("chomper_card.png", 70, 90, false, true)));
 		chomperCard = pane;
 		pane.setTranslateX(20);
-		pane.setTranslateY(210);
+		pane.setTranslateY(300);
+		dragPlantsToPlace(pane, "chomper");
+		chomper = new Pane(new ImageView(new Image("chomper.png", 70, 90, false, true)));
+		chomper.setVisible(false);
+		base.getChildren().add(chomper);
 		base.getChildren().add(pane);
 		
 //		for drag and drop of wallnut, INCOMPLETE
 		pane = new Pane(new ImageView(new Image("wallnut_card.png", 70, 90, false, true)));
 		walnutCard = pane;
 		pane.setTranslateX(20);
-		pane.setTranslateY(300);
-		base.getChildren().add(pane);
-		
-//		for drag and drop of snowpea, INCOMPLETE
-		pane = new Pane(new ImageView(new Image("snowpea_card.png", 70, 90, false, true)));
-		snowPeaShooterCard = pane;
-		pane.setTranslateX(20);
 		pane.setTranslateY(395);
+		dragPlantsToPlace(pane, "walnut");
+		walnut = new Pane(new ImageView(new Image("walnut.png", 100, 90, false, true)));
+		walnut.setVisible(false);
+		base.getChildren().add(walnut);
 		base.getChildren().add(pane);
 		
 		
@@ -293,7 +308,14 @@ public class backyard_controller implements Initializable{
 	}
 	
 	public void setActualZombieMatrix(int x, int y, Zombie z) {
-		this.actualZombieMatrix[x][y][this.getZombieMatrix()[x][y] + 1] = z; 
+		this.actualZombieMatrix[x][y][this.getZombieMatrix()[x][y] - 1] = z; 
+	}
+	
+	public void removeActualZombieMatrix(int x, int y) {
+		for(int i = 1; i < 20; i++) {
+			this.actualZombieMatrix[x][y][i - 1] = this.actualZombieMatrix[x][y][i]; 
+			this.actualZombieMatrix[x][y][19] = null;
+		}
 	}
 	
 	public plants[][] getActualPlantMatrix(){
@@ -357,10 +379,25 @@ public class backyard_controller implements Initializable{
 					sunflower.setTranslateX(event.getSceneX());
 					sunflower.setTranslateY(event.getSceneY());
 				}
-				else if(plantChoice.equals("peashooter") && checkEnoughMoney(PeaShooter.getPrice())) {
+				else if(plantChoice.equals("peashooter") && checkEnoughMoney(PeaShooter.getPrice()) && PeaShooter.getTimeLeftToPlant() <= 0) {
 					peashooter.setVisible(true);
 					peashooter.setTranslateX(event.getSceneX() - 25);
 					peashooter.setTranslateY(event.getSceneY());
+				}
+				else if(plantChoice.equals("snowpeashooter") && checkEnoughMoney(snowPeaShooter.getPrice()) && snowPeaShooter.getTimeLeftToPlant() <= 0) {
+					snowpeashooter.setVisible(true);
+					snowpeashooter.setTranslateX(event.getSceneX() - 25);
+					snowpeashooter.setTranslateY(event.getSceneY());
+				}
+				else if(plantChoice.equals("chomper") && checkEnoughMoney(Chomper.getPrice()) && Chomper.getTimeLeftToPlant() <= 0) {
+					chomper.setVisible(true);
+					chomper.setTranslateX(event.getSceneX() - 25);
+					chomper.setTranslateY(event.getSceneY());
+				}
+				else if(plantChoice.equals("walnut") && checkEnoughMoney(Walnut.getPrice()) && Walnut.getTimeLeftToPlant() <= 0) {
+					walnut.setVisible(true);
+					walnut.setTranslateX(event.getSceneX() - 25);
+					walnut.setTranslateY(event.getSceneY());
 				}
 			}
 		});
@@ -381,18 +418,25 @@ public class backyard_controller implements Initializable{
 					
 					if(plantChoice.equals("sunflower") && checkEnoughMoney(Sunflower.getPrice()) && Sunflower.getTimeLeftToPlant() <= 0) {
 						placePlants(255+xIndex*80 - 20, 80 + yIndex*100, "sunflower", xIndex, yIndex);
-//						reset plant time
-						Sunflower.resetTimeLeftToPlant();
-//						set place time
-						Sunflower.setPlaceTime(System.nanoTime());
 					}
-					else if(plantChoice.equals("peashooter") && checkEnoughMoney(PeaShooter.getPrice())) {
-						
+					else if(plantChoice.equals("peashooter") && checkEnoughMoney(PeaShooter.getPrice()) && PeaShooter.getTimeLeftToPlant() <= 0) {
 						placePlants(255+xIndex*80 - 20, 80 + yIndex*100, "peashooter", xIndex, yIndex);
+					}
+					else if(plantChoice.equals("snowpeashooter") && checkEnoughMoney(snowPeaShooter.getPrice()) && snowPeaShooter.getTimeLeftToPlant() <= 0) {
+						placePlants(255+xIndex*80 - 20, 80 + yIndex*100, "snowpeashooter", xIndex, yIndex);
+					}
+					else if(plantChoice.equals("chomper") && checkEnoughMoney(Chomper.getPrice()) && Chomper.getTimeLeftToPlant() <= 0) {
+						placePlants(255+xIndex*80 - 20, 80 + yIndex*100, "chomper", xIndex, yIndex);
+					}
+					else if(plantChoice.equals("walnut") && checkEnoughMoney(Walnut.getPrice()) && Walnut.getTimeLeftToPlant() <= 0) {
+						placePlants(255+xIndex*80 - 20, 80 + yIndex*100, "walnut", xIndex, yIndex);
 					}
 				}
 				sunflower.setVisible(false);
 				peashooter.setVisible(false);
+				snowpeashooter.setVisible(false);
+				chomper.setVisible(false);
+				walnut.setVisible(false);
 			}
 		});
 	}
@@ -402,19 +446,56 @@ public class backyard_controller implements Initializable{
 		plants o = null;
 //		System.out.println("x "+matrixX+" y "+matrixY);
 		if(this.backyardMatrix[matrixX][matrixY] != 1) {
+			
 			this.backyardMatrix[matrixX][matrixY] = 1;
+			
 			if(plantChoice.equals("peashooter")) {
 				o = new PeaShooter(positionX, positionY);
-	//			CHANGE THIS!! ONLY ADDING PEASHOOTERS NOW!! THIS LIST IS FOR ALL BULLET PLANTS
 				this.peashooterList.add(o);
 				this.setScore(this.getScore() - PeaShooter.getPrice());
+//				reset plant time
+				PeaShooter.resetTimeLeftToPlant();
+//				set Place time
+				PeaShooter.setPlaceTime(System.nanoTime());
 				
 			}
 			else if(plantChoice.equals("sunflower")) {
 				o = new Sunflower(positionX, positionY);
 				this.nonShooterPlantsList.add(o);
 				this.setScore(this.getScore() - Sunflower.getPrice());
+//				reset plant time
+				Sunflower.resetTimeLeftToPlant();
+//				set place time
+				Sunflower.setPlaceTime(System.nanoTime());
 			}
+			else if(plantChoice.equals("snowpeashooter")) {
+				o = new snowPeaShooter(positionX, positionY);
+				this.peashooterList.add(o);
+				this.setScore(this.getScore() - snowPeaShooter.getPrice());
+//				reset plant time
+				snowPeaShooter.resetTimeLeftToPlant();
+//				set place time
+				snowPeaShooter.setPlaceTime(System.nanoTime());
+			}
+			else if(plantChoice.equals("chomper")) {
+				o = new Chomper(positionX, positionY);
+				this.nonShooterPlantsList.add(o);
+				this.setScore(this.getScore() - Chomper.getPrice());
+//				reset plant time
+				Chomper.resetTimeLeftToPlant();
+//				set place time
+				Chomper.setPlaceTime(System.nanoTime());
+			}
+			else if(plantChoice.equals("walnut")) {
+				o = new Walnut(positionX, positionY);
+				this.nonShooterPlantsList.add(o);
+				this.setScore(this.getScore() - Walnut.getPrice());
+//				reset plant time
+				Walnut.resetTimeLeftToPlant();
+//				set place time
+				Walnut.setPlaceTime(System.nanoTime());
+			}
+			
 			this.base.getChildren().add(o.getSprite());
 		}
 		bringComponentsOnTop();
@@ -477,7 +558,7 @@ public class backyard_controller implements Initializable{
 		return this.sunTokenList;
 	}
 	
-//	INCOMPLETE: Zombies
+//	INCOMPLETE: Zombies, place time!
 	public void resetGame() {
 		for(plants p: this.getpeashooterList()) {
 			p.getSprite().setVisible(false);

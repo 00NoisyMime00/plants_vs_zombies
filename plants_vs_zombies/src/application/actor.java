@@ -9,7 +9,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 
 public class actor {
-	private int health;
+	protected int health;
 	private int attack_strength;
 	private int attack_radius;
 	private int speed;
@@ -121,6 +121,14 @@ public class actor {
 	
 	public void setStartTime(long time) {
 		this.startTime = time;
+	}
+	
+	public void setHealth(int health) {
+		this.health = health;
+	}
+	
+	public int getHealth() {
+		return this.health;
 	}
 }
 
